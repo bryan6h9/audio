@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#0b0b10">
+    <meta name="description" content="Reproductor de música local con playlists, álbumes y géneros.">
+
+    <title>bryan6h9 Music</title>
+
+    <!-- Fuente ligera estilo moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="background-blur"></div>
+
+<div class="app">
+
+    <!-- LADO IZQUIERDO / BIBLIOTECA -->
+    <main class="library">
+
+        <header class="library-header">
+            
+
+            <button class="profile-btn" title="Perfil">
+                <i class="fa-solid fa-user"></i>
+            </button>
+        </header>
+
+        <!-- Botones generados desde JS -->
+        <nav class="header-buttons" id="navButtons" aria-label="Navegación principal"></nav>
+
+        <!-- Buscador -->
+        <section class="search-container">
+            <i class="fas fa-search"></i>
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Buscar canciones, artistas, álbumes..."
+                autocomplete="off"
+            >
+        </section>
+
+        <!-- Catálogo dinámico -->
+        <section class="catalog" id="catalog" aria-live="polite"></section>
+
+    </main>
+
+    <!-- REPRODUCTOR GRANDE -->
+    <aside class="player">
+
+        <div class="player-glow"></div>
+
+        <header class="player-header">
+            <span class="player-label">
+                <i class="fa-solid fa-wave-square"></i>
+                Reproduciendo ahora
+            </span>
+        </header>
+
+        <section class="cover-container">
+            <div class="cover" id="cover">
+                <img 
+                    id="coverImg" 
+                    src="covers/cover1.jpg" 
+                    alt="Portada del álbum"
+                    loading="lazy"
+                >
+
+                <div class="cover-overlay">
+                    <div class="cover-center"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="song-info">
+            <h2 id="songName">Selecciona una canción</h2>
+            <p id="artist">Reproductor local</p>
+        </section>
+
+        <audio id="audio" preload="metadata"></audio>
+
+        <!-- Progreso -->
+        <section class="progress-container">
+            <div class="time-display">
+                <span class="current-time" id="currentTime">0:00</span>
+                <span class="total-time" id="totalTime">0:00</span>
+            </div>
+
+            <div class="progress-wrapper">
+                <input 
+                    type="range" 
+                    id="progress" 
+                    value="0" 
+                    min="0" 
+                    max="100"
+                    aria-label="Progreso de la canción"
+                >
+                <div class="progress-line"></div>
+            </div>
+        </section>
+
+        <!-- Controles -->
+        <section class="controls">
+            <button id="prevBtn" title="Canción anterior">
+                <i class="fas fa-step-backward"></i>
+            </button>
+
+            <button id="playBtn" class="play-btn" title="Reproducir o pausar">
+                <i class="fas fa-play"></i>
+            </button>
+
+            <button id="nextBtn" title="Siguiente canción">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </section>
+
+        <!-- Volumen -->
+        <section class="volume-container">
+            <i class="fas fa-volume-down"></i>
+
+            <input 
+                type="range" 
+                id="volume" 
+                value="70" 
+                min="0" 
+                max="100" 
+                title="Volumen"
+                aria-label="Volumen"
+            >
+
+            <i class="fas fa-volume-up"></i>
+        </section>
+
+        <!-- Ondas livianas -->
+        <section class="wave-animation" id="waveAnimation">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </section>
+
+    </aside>
+
+</div>
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
