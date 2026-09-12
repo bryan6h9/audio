@@ -414,6 +414,7 @@ let currentGenre = null;
 let currentAlbumIndex = -1;
 let isPlayingFromAlbum = false;
 let playlists = JSON.parse(localStorage.getItem("musicPlayerPlaylists")) || {};
+let registros = JSON.parse(localStorage.getItem("registros")) || [];
 
 // ==========================================
 // FUNCIONES AUXILIARES
@@ -541,10 +542,11 @@ function loadPlaylists() {
 // ==========================================
 function createNavButtons() {
     const buttons = [
-        { id: "allBtn", text: `<i class="fas fa-house"></i> Inicio`, view: "all" },
-        { id: "albumsBtn", text: `<i class="fas fa-compact-disc"></i> Álbumes`, view: "albums" },
-        { id: "playlistsBtn", text: `<i class="fas fa-headphones"></i> Playlists`, view: "playlists" }
-    ];
+    { id: "allBtn", text: `<i class="fas fa-house"></i> Inicio`, view: "all" },
+    { id: "albumsBtn", text: `<i class="fas fa-compact-disc"></i> Álbumes`, view: "albums" },
+    { id: "playlistsBtn", text: `<i class="fas fa-headphones"></i> Playlists`, view: "playlists" },
+    { id: "recordsBtn", text: `<i class="fas fa-user-plus"></i> Registros`, view: "records" }
+];
 
     navButtons.innerHTML = buttons.map(btn => `
         <button class="nav-btn" id="${btn.id}" data-view="${btn.view}">${btn.text}</button>
@@ -572,6 +574,9 @@ function updateActiveNavButton() {
     if (currentView === "all" || currentView === "genre") $("#allBtn")?.classList.add("active");
     if (currentView === "albums" || currentView === "album") $("#albumsBtn")?.classList.add("active");
     if (currentView === "playlists" || currentView === "playlist") $("#playlistsBtn")?.classList.add("active");
+    if (currentView === "records") {
+    document.getElementById("recordsBtn")?.classList.add("active");
+}
 }
 
 function switchView(view) {
@@ -598,6 +603,128 @@ function renderCatalog(filter = "") {
     if (currentView === "playlists") renderPlaylistList();
     if (currentView === "playlist") renderPlaylistSongs(filter);
     if (currentView === "genre") renderGenreSongs(filter);
+    if (currentView === "records") renderRegistros();
+}
+
+
+
+// ==========================================
+// REGISTROS DE USUARIOS
+// ==========================================
+
+function saveRegistros() {
+    localStorage.setItem("registros", JSON.stringify(registros));
+}
+
+function renderRegistros() {
+    catalog.innerHTML = `
+        <div class="playlist-title">
+            <div>
+                <h3>
+                    <i class="fas fa-user-plus"></i>
+                    Registro de usuarios
+                </h3>
+                <p>Agrega usuarios y guarda sus datos en el navegador.</p>
+            </div>
+        </div>
+
+        <div class="registro-container">
+
+            <form id="registroForm" class="registro-form">
+
+                <input
+                    type="text"
+                    id="registroNombre"
+                    placeholder="Nombre"
+                    required
+                >
+
+                <input
+                    type="email"
+                    id="registroCorreo"
+                    placeholder="Correo electrónico"
+                    required
+                >
+
+                <button type="submit">
+                    <i class="fas fa-save"></i>
+                    Registrar
+                </button>
+
+            </form>
+
+            <div id="registrosLista"></div>
+
+        </div>
+    `;
+
+    const form = document.getElementById("registroForm");
+
+    form.addEventListener("submit", registrarUsuario);
+
+    mostrarRegistros();
+}
+
+function registrarUsuario(event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById("registroNombre").value.trim();
+    const correo = document.getElementById("registroCorreo").value.trim();
+
+    if (!nombre || !correo) {
+        showNotification("Completa todos los campos", "error");
+        return;
+    }
+
+    const nuevoRegistro = {
+        nombre: nombre,
+        correo: correo
+    };
+
+    registros.push(nuevoRegistro);
+
+    saveRegistros();
+
+    event.target.reset();
+
+    mostrarRegistros();
+
+    showNotification("Registro guardado correctamente", "success");
+}
+
+function mostrarRegistros() {
+    const lista = document.getElementById("registrosLista");
+
+    if (!lista) return;
+
+    if (registros.length === 0) {
+        lista.innerHTML = `
+            <p>
+                No hay registros todavía.
+            </p>
+        `;
+        return;
+    }
+
+    lista.innerHTML = "";
+
+    registros.forEach((registro, index) => {
+
+        const item = document.createElement("div");
+
+        item.className = "registro-item";
+
+        item.innerHTML = `
+            <div>
+                <strong>${registro.nombre}</strong>
+                <span>${registro.correo}</span>
+            </div>
+
+            <span>#${index + 1}</span>
+        `;
+
+        lista.appendChild(item);
+    });
 }
 
 function renderGenrePlaylists() {
@@ -1479,6 +1606,9 @@ function deleteCurrentPlaylist() {
 // ==========================================
 function searchHandler() {
     const value = searchInput.value.trim();
+    if (currentView === "records") {
+    return;
+}
 
     if (!value) {
         renderCatalog("");
